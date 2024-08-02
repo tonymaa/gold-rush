@@ -51,7 +51,7 @@ const AddInfoForm: React.FC = () => {
             <Form.Item name="expectedProfit" label="Expected profit" rules={[{ required: true }]}>
                 <InputNumber style={{ width: '100%' }}/>
             </Form.Item>
-            <Form.Item name="expectedThreshold" label="Expected Threshold" rules={[{ required: true }]}>
+            <Form.Item name="expectedThreshold" label="Expected threshold" rules={[{ required: true }]}>
                 <InputNumber style={{ width: '100%' }}/>
             </Form.Item>
             <Form.Item {...tailLayout}>
