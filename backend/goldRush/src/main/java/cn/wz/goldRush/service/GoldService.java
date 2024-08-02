@@ -1,64 +1,83 @@
 package cn.wz.goldRush.service;
 
+import cn.wz.goldRush.entity.GoldPrice;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.PostMethod;
 import org.springframework.stereotype.Service;
-
-
-import java.io.IOException;
-import java.util.HashMap;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Date;
 import java.util.Map;
 
 @Service
 public class GoldService {
 
-    private void addHeaders(PostMethod method){
-        method.addRequestHeader("Sec-Ch-Ua", "\"Google Chrome\";v=\"125\", \"Chromium\";v=\"125\", \"Not.A/Brand\";v=\"24\"");
-        method.addRequestHeader("Sec-Ch-Ua-Mobile", "?0");
-        method.addRequestHeader("Sec-Ch-Ua-Platform", "Windows");
-        method.addRequestHeader("Sec-Fetch-Dest", "empty");
-        method.addRequestHeader("Sec-Fetch-Mode", "cors");
-        method.addRequestHeader("Sec-Fetch-Site", "same-origin");
-        method.addRequestHeader("", "");
-        method.addRequestHeader("Uuid", "ROwFCnuTroqTnbNRnFM3K0yNluviWogK");
-        method.addRequestHeader("Userid", "");
-        method.addRequestHeader("Tellerno", "9881601");
-        method.addRequestHeader("Timeout", "100000");
-        method.addRequestHeader("Trandt", "20240522");
-        method.addRequestHeader("Transno", "Q00001");
-        method.addRequestHeader("Trantm", "134601");
-        method.addRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36");
-        method.addRequestHeader("Branchno", "00323");
-        method.addRequestHeader("Chnflg", "1");
-        method.addRequestHeader("Clentid", "495");
-        method.addRequestHeader("Clientid", "495");
-        method.addRequestHeader("Connection", "keep-alive");
-        method.addRequestHeader("Content-Type", "application/json;charset=UTF-8");
-        method.addRequestHeader("Host", "openapi.boc.cn");
-        method.addRequestHeader("Origin", "https://openapi.boc.cn");
-        method.addRequestHeader("Referer", "https://openapi.boc.cn/erh/jljBank/EBank.html");
-        method.addRequestHeader("Bankno", "003");
-        method.addRequestHeader("Authtellerno", "9881601");
-        method.addRequestHeader("Accept",  "application/json, text/plain, */*");
-    }
-
-    public void getCnBankGoldPrice() {
+    public GoldPrice getCnBankGoldPrice() {
+        GoldPrice goldPrice = new GoldPrice();
         try {
-            String url = "https://openapi.boc.cn/unlogin/finance/query_market_price";
-            HttpClient client = new HttpClient();
-            PostMethod method = new PostMethod(url);
-            method.addParameter("rateCode", "AUA/CNY");
-            addHeaders(method);
-            int statusCode = client.executeMethod(method);
-            if (statusCode != HttpStatus.SC_OK) {
-//            logger.error("Method failed: " + method.getStatusLine());
+            HttpClient client = HttpClient.newHttpClient();
+
+            // 设置请求体
+            String requestBody = "{\"rateCode\": \"AUA/CNY\"}";
+
+            // 设置请求
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI("https://openapi.boc.cn/unlogin/finance/query_market_price"))
+                    .header("Accept", "application/json, text/plain, */*")
+                    .header("Accept-Encoding", "gzip, deflate, br, zstd")
+                    .header("Accept-Language", "en-US,en;q=0.9,zh-CN;q=0.8,zh;q=0.7")
+                    .header("Acton", "")
+                    .header("Authtellerno", "9881601")
+                    .header("Bankno", "003")
+                    .header("Branchno", "00323")
+                    .header("Chnflg", "1")
+                    .header("Clentid", "495")
+                    .header("Clientid", "495")
+                    .header("Content-Type", "application/json;charset=UTF-8")
+                    .header("Origin", "https://openapi.boc.cn")
+                    .header("Referer", "https://openapi.boc.cn/erh/jljBank/EBank.html")
+                    .header("Sec-Ch-Ua", "\"Google Chrome\";v=\"125\", \"Chromium\";v=\"125\", \"Not.A/Brand\";v=\"24\"")
+                    .header("Sec-Ch-Ua-Mobile", "?0")
+                    .header("Sec-Ch-Ua-Platform", "\"Windows\"")
+                    .header("Sec-Fetch-Dest", "empty")
+                    .header("Sec-Fetch-Mode", "cors")
+                    .header("Sec-Fetch-Site", "same-origin")
+                    .header("Tellerno", "9881601")
+                    .header("Timeout", "100000")
+                    .header("Trandt", "20240522")
+                    .header("Transno", "Q00001")
+                    .header("Trantm", "134601")
+                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36")
+                    .header("Userid", "")
+                    .header("Uuid", "ROwFCnuTroqTnbNRnFM3K0yNluviWogK")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            // 发送请求
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            // 处理响应
+            if (response.statusCode() == 200) {
+                // 将JSON字符串转换为Map
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, Object> responseData = objectMapper.readValue(response.body(), Map.class);
+
+                // 获取并格式化数据
+                Map<String, Object> xpadgjlInfo = (Map<String, Object>) responseData.get("xpadgjlInfo");
+                goldPrice.setBid((Double) xpadgjlInfo.get("ask1"));
+                goldPrice.setSell((Double)xpadgjlInfo.get("bid1"));
+                goldPrice.setDate(new Date());
+//                String formatted = String.format("Ask: %s, Bid: %s", xpadgjlInfo.get("ask1"), xpadgjlInfo.get("bid1"));
+//                System.out.println(formatted);
+
+            } else {
+//                System.out.println("请求失败，状态码: " + response.statusCode());
             }
-            byte[] responseBody = method.getResponseBody();
-            String responseStr = new String(responseBody,"UTF-8");
-            HashMap hashMap = new ObjectMapper().readValue(responseStr, HashMap.class);
-            System.out.println(hashMap.toString());
-        }catch (IOException ioException){}
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return goldPrice;
     }
 }

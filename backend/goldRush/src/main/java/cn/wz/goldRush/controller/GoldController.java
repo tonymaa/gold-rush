@@ -1,5 +1,6 @@
 package cn.wz.goldRush.controller;
 
+import cn.wz.goldRush.entity.GoldPrice;
 import cn.wz.goldRush.service.GoldService;
 import cn.wz.goldRush.utils.ResponseInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ public class GoldController {
 
     @GetMapping("price")
     public ResponseInfo price(){
-        goldService.getCnBankGoldPrice();
-        return ResponseInfo.success("1000");
+        GoldPrice goldPrice = goldService.getCnBankGoldPrice();
+        return ResponseInfo.success(goldPrice);
     }
 }
