@@ -1,0 +1,24 @@
+
+#数据库配置
+spring:
+  jpa:
+#    show-sql: true
+#    format-sql: true
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.community.dialect.SQLiteDialect
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
+  #      format-sql: true
+  servlet:
+    multipart:
+      enabled: true
+      #允许上传的单个文件大小
+      max-file-size: 5GB
+      #每次上传请求允许的文件总大小
+      max-request-size: 6GB
+#  datasource:
+#    driver-class-name: org.sqlite.JDBC
+#    url: jdbc:sqlite:sqlite/gold.sqlite
+
+server:
+  port: 580
