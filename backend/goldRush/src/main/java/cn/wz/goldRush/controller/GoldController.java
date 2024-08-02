@@ -1,6 +1,7 @@
 package cn.wz.goldRush.controller;
 
 import cn.wz.goldRush.entity.GoldPrice;
+import cn.wz.goldRush.respository.UserJpaRepository;
 import cn.wz.goldRush.service.GoldService;
 import cn.wz.goldRush.utils.ResponseInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class GoldController {
     @Autowired
     GoldService goldService;
+
+    @Autowired
+    UserJpaRepository userJpaRepository;
 
     @GetMapping("price")
     public ResponseInfo price(){

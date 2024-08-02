@@ -67,7 +67,7 @@ public class GoldService {
                 Map<String, Object> xpadgjlInfo = (Map<String, Object>) responseData.get("xpadgjlInfo");
                 goldPrice.setBid((Double) xpadgjlInfo.get("ask1"));
                 goldPrice.setSell((Double)xpadgjlInfo.get("bid1"));
-                goldPrice.setDate(new Date());
+                goldPrice.setUpdateDate(new Date());
 //                String formatted = String.format("Ask: %s, Bid: %s", xpadgjlInfo.get("ask1"), xpadgjlInfo.get("bid1"));
 //                System.out.println(formatted);
 

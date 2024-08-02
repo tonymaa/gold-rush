@@ -1,6 +1,14 @@
 
 #数据库配置
 spring:
+  sql:
+    init:
+      encoding: utf-8
+      mode: always
+      schema-locations: classpath:sql/schema.sql
+      data-locations: classpath:sql/data.sql
+      continue-on-error: true
+
   jpa:
 #    show-sql: true
 #    format-sql: true
