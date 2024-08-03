@@ -28,5 +28,26 @@ spring:
 #    driver-class-name: org.sqlite.JDBC
 #    url: jdbc:sqlite:sqlite/gold.sqlite
 
+#  use 163 to send email
+  mail:
+    host: smtp.163.com
+    username: ${Username}
+    password: ${AuthorizationCode}
+    port: 465
+    protocol: smtp
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          ssl:
+            enable: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+
 server:
   port: 580

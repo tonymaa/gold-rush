@@ -2,6 +2,7 @@ package cn.wz.goldRush.controller;
 
 import cn.wz.goldRush.entity.GoldPrice;
 import cn.wz.goldRush.respository.UserJpaRepository;
+import cn.wz.goldRush.service.EmailService;
 import cn.wz.goldRush.service.GoldService;
 import cn.wz.goldRush.utils.ResponseInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,14 @@ public class GoldController {
     @Autowired
     UserJpaRepository userJpaRepository;
 
+    @Autowired
+    EmailService emailService;
+
     @GetMapping("price")
     public ResponseInfo price(){
         GoldPrice goldPrice = goldService.getCnBankGoldPrice();
+        // do send email
+        emailService.sendSimpleEmail("1285242979@qq.com", "test title", "test body");
         return ResponseInfo.success(goldPrice);
     }
 }
