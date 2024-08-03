@@ -65,12 +65,19 @@ public class GoldService {
 
                 // 获取并格式化数据
                 Map<String, Object> xpadgjlInfo = (Map<String, Object>) responseData.get("xpadgjlInfo");
-                goldPrice.setBid((Double) xpadgjlInfo.get("ask1"));
-                goldPrice.setSell((Double)xpadgjlInfo.get("bid1"));
-                goldPrice.setUpdateDate(new Date());
-//                String formatted = String.format("Ask: %s, Bid: %s", xpadgjlInfo.get("ask1"), xpadgjlInfo.get("bid1"));
-//                System.out.println(formatted);
 
+                // 获取 ask 和 bid 值，并处理类型转换
+                Number askNumber = (Number) xpadgjlInfo.get("ask1");
+                Number bidNumber = (Number) xpadgjlInfo.get("bid1");
+
+                // 将 ask 和 bid 转换为 Double 类型
+                Double ask = askNumber instanceof Integer ? askNumber.doubleValue() : (Double) askNumber;
+                Double bid = bidNumber instanceof Integer ? bidNumber.doubleValue() : (Double) bidNumber;
+
+                // 设置 goldPrice 对象的属性
+                goldPrice.setBid(ask);
+                goldPrice.setSell(bid);
+                goldPrice.setUpdateDate(new Date());
             } else {
 //                System.out.println("请求失败，状态码: " + response.statusCode());
             }
