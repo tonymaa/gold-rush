@@ -6,13 +6,13 @@ CREATE TABLE user_tbl (
                           gold_weight REAL,
                           gold_cost REAL
 );
-CREATE TABLE gold_price (
+CREATE TABLE gold_price_tbl (
                             id INTEGER PRIMARY KEY AUTOINCREMENT, -- 假设 BaseEntity 包含一个 ID 属性
                             update_date TEXT, -- SQLite中没有直接的Date类型，可以使用TEXT保存日期时间
                             bid REAL,
                             sell REAL
 );
-CREATE TABLE gold_price_alert (
+CREATE TABLE gold_price_alert_tbl (
                                   id INTEGER PRIMARY KEY AUTOINCREMENT, -- 假设 BaseEntity 包含一个 ID 属性
                                   expected_profit REAL,
                                   expected_threshold REAL,

@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "user_tbl")
+@Table(name = "gold_price_alert_tbl")
 public class GoldPriceAlert extends BaseEntity {
     @Column(name = "expected_profit")
     Double expectedProfit;

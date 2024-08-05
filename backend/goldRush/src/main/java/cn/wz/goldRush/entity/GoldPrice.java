@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Entity
 @Data
-@Table(name = "user_tbl")
+@Table(name = "gold_price_tbl")
 public class GoldPrice extends BaseEntity{
     @Column(name = "update_date")
     Date updateDate;
