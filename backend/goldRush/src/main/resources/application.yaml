@@ -31,8 +31,8 @@ spring:
 #  use 163 to send email
   mail:
     host: smtp.163.com
-    username: ${Username}
-    password: ${AuthorizationCode}
+    username: ineedgold2024@163.com
+    password: ITDGOETKLDUELFOF
     port: 465
     protocol: smtp
     default-encoding: UTF-8
