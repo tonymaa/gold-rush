@@ -17,6 +17,7 @@ import org.springframework.data.repository.query.FluentQuery;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
@@ -81,7 +82,8 @@ public class AutoGetGoldPrice {
             if (goldPrice.getBid() < goldPriceAlert.getLeftPoint()){
                 User user = goldPriceAlert.getUser();
                 String title = String.format("【黄金降价%s】清仓大甩卖，黄金降价啦，原本要580一克，现在仅需%s!!!", goldPrice.getBid(), goldPrice.getBid());
-                String content = String.format("【%s】来自%s的策略【%s】", new Date(), user.getName(), goldPriceAlert.getDescription());
+                String content = String.format("【%s】来自%s的策略【%s】",  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
+                        user.getName(), goldPriceAlert.getDescription());
                 emailService.sendSimpleEmail(user.getEmail(), title, content);
                 goldPriceAlert.setterLastNotifyDate(new Date());
                 goldPriceAlertJpaRepository.save(goldPriceAlert);
@@ -89,7 +91,8 @@ public class AutoGetGoldPrice {
             if (goldPrice.getSell() > goldPriceAlert.getRightPoint()){
                 User user = goldPriceAlert.getUser();
                 String title = String.format("【黄金升值】%s!!! %s!!! %s!!!", goldPrice.getSell(), goldPrice.getSell(), goldPrice.getSell());
-                String content = String.format("【%s】来自%s的策略【%s】", new Date(), user.getName(), goldPriceAlert.getDescription());
+                String content = String.format("【%s】来自%s的策略【%s】",  new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()),
+                        user.getName(), goldPriceAlert.getDescription());
                 emailService.sendSimpleEmail(user.getEmail(), title, content);
                 goldPriceAlert.setterLastNotifyDate(new Date());
                 goldPriceAlertJpaRepository.save(goldPriceAlert);
