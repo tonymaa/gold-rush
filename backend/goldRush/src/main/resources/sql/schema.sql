@@ -13,8 +13,11 @@ CREATE TABLE gold_price_tbl (
                             sell REAL
 );
 CREATE TABLE gold_price_alert_tbl (
-                                  id INTEGER PRIMARY KEY AUTOINCREMENT, -- 假设 BaseEntity 包含一个 ID 属性
-                                  expected_profit REAL,
-                                  expected_threshold REAL,
-                                  user_id TEXT -- 假设 userId 是字符串类型，作为外键或其他用途
+    id INTEGER PRIMARY KEY AUTOINCREMENT, -- 假设 BaseEntity 包含一个 ID 属性
+    description TEXT,
+    status TEXT,
+    left_point REAL,
+    right_point REAL,
+    type TEXT,
+    user_name TEXT -- 假设 userId 是字符串类型，作为外键或其他用途
 );
