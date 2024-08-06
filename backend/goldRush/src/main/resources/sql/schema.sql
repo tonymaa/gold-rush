@@ -21,3 +21,6 @@ CREATE TABLE gold_price_alert_tbl (
     type TEXT,
     user_name TEXT -- 假设 userId 是字符串类型，作为外键或其他用途
 );
+
+alter table gold_price_alert_tbl add last_notify_date TEXT;
+alter table gold_price_alert_tbl add notify_interval_s REAL;

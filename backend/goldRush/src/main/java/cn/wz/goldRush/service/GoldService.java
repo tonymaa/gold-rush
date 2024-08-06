@@ -77,7 +77,7 @@ public class GoldService {
                 // 设置 goldPrice 对象的属性
                 goldPrice.setBid(ask);
                 goldPrice.setSell(bid);
-                goldPrice.setUpdateDate(new Date());
+                goldPrice.setterUpdateDate(new Date());
             } else {
 //                System.out.println("请求失败，状态码: " + response.statusCode());
             }
