@@ -33,3 +33,9 @@ build/
 ### VS Code ###
 .vscode/
 /.idea/
+
+/android/.gradle/
+
+/android/app/release/
+
+local.properties
