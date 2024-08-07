@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Gold Price Push Notification</string>
+    <string name="app_name">Gold Price Notification</string>
+    <string name="appwidget_title">Gold Price Notification</string>
 </resources>
