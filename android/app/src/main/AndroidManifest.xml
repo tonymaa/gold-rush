@@ -6,6 +6,7 @@
     <!-- 保持屏幕亮起权限 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" >
     </uses-permission>
+    <uses-permission android:name="android.permission.BROADCAST_STICKY"/>
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" >
     </uses-permission>
     <application
@@ -20,16 +21,10 @@
         tools:targetApi="35">
         <!-- If this receiver listens for broadcasts sent from the system or from
      other apps, even other apps that you own, set android:exported to "true". -->
-<!--        <receiver android:name=".broadCast.MyBroadcastReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="cn.tony.gold.price" />
-            </intent-filter>
-        </receiver>-->
         <service
             android:name=".service.MyForegroundService"
             android:foregroundServiceType="location"
-            android:exported="false" />
+            android:exported="true" />
         <receiver android:name=".widget.DemoWidgetProvider"
             android:label="@string/appwidget_title"
             android:exported="true">
@@ -39,6 +34,7 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="cn.tony.gold.price" />
             </intent-filter>
         </receiver>
         <activity android:name=".MainActivity"

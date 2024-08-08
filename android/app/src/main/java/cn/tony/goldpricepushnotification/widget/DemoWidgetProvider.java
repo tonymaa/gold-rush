@@ -2,38 +2,56 @@ package cn.tony.goldpricepushnotification.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.widget.RemoteViews;
+
+import cn.tony.goldpricepushnotification.R;
+import cn.tony.goldpricepushnotification.service.MyForegroundService;
 
 public class DemoWidgetProvider extends AppWidgetProvider {
     private static final String TAG = "DemoWidgetProvider";
+
+//    RemoteViews remoteViews = null;
+
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {        Log.d(TAG, "onUpdate");
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
-        if (appWidgetManager == null || appWidgetIds == null) {
-            Log.d(TAG, "onUpdate error, appWidgetManager=" + appWidgetManager + " appWidgetIds=" + appWidgetIds);
-            return;
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
+        String intentAction = intent.getAction();
+        if ("cn.tony.gold.price".equals(intentAction)) {
+            String content = intent.getStringExtra("content");
+            // 处理接收到的内容
+            Log.d("BroadcastReceiver", "Received content: " + content);
+
+            AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+            ComponentName thisWidget = new ComponentName(context, DemoWidgetProvider.class);
+            int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
+
+            for (int appWidgetId : appWidgetIds) {
+                updateAppWidget(context, appWidgetManager, appWidgetId, content);
+            }
         }
-        //小组件是运行在独立进程中，所以涉及到跨进程的渲染，故只能使用remoteViews加载和设置ui
-//        createRemoteViews(context);
-//        updateDefaultWidget(context, appWidgetManager, appWidgetIds);
     }
 
-/*    private static void updateDefaultWidget(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        int roundCorner = Utils.dip2px(context, 14);    //dp转化为px，工具类代码不贴了，网上很多
-        int topWidth = Utils.dip2px(context, 80);
-        int topHeight = Utils.dip2px(context, 80);
-        //将图片压缩加载
-        Bitmap topBitmap = decodeSampleBitmap(context, R.drawable.demo_scan, topWidth, topHeight);
-        if (topBitmap!= null) {
-            //使用remoteViews设置图片视图
-            remoteViews.setImageViewBitmap(R.id.iv_scan, topBitmap);
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Log.d(TAG, "onUpdate");
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
+        for (int appWidgetId : appWidgetIds) {
+            updateAppWidget(context, appWidgetManager, appWidgetId, "Initial Text");
         }
-        //使用remoteViews设置展示文字和颜色
-        remoteViews.setTextViewText(R.id.tv_scan, "AR扫一扫");
-        remoteViews.setTextColor(R.id.tv_scan, Color.RED);
-        updateWidgetClickEvent(context, appWidgetManager, appWidgetIds);
     }
+
+    static void updateAppWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId, String text) {
+        RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.appwidget_demo_layout);
+        views.setTextViewText(R.id.price_text, text);
+        appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+/*
 
     private static void updateWidgetClickEvent(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         DebugLog.log(TAG, "updateWidgetClickEvent");
@@ -57,12 +75,7 @@ public class DemoWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    private void createRemoteViews(Context context) {
-        if (remoteViews == null) {
-            DebugLog.log(TAG, "createRemoteViews");
-            remoteViews = new RemoteViews(context.getPackageName(), R.layout.scan_widget_layout);
-        }
-    }
+
 
     public static Bitmap decodeSampleBitmap(Context context, int resId, int reqWidth, int reqHeight) {
         BitmapFactory.Options options = new BitmapFactory.Options();

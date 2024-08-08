@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
@@ -16,6 +17,7 @@ import java.util.Date;
 
 import cn.tony.goldpricepushnotification.R;
 import cn.tony.goldpricepushnotification.entity.GoldPrice;
+import cn.tony.goldpricepushnotification.widget.DemoWidgetProvider;
 
 
 public class MyForegroundService extends Service {
@@ -104,6 +106,8 @@ public class MyForegroundService extends Service {
         Intent intent = new Intent();
         intent.setAction("cn.tony.gold.price");
         intent.putExtra("content", String.format("买入价：%s, 卖出价：%s", goldPrice.getBid(), goldPrice.getSell()));
+        sendBroadcast(intent);
+        intent.setComponent(new ComponentName(this, DemoWidgetProvider.class));
         sendBroadcast(intent);
     }
 }

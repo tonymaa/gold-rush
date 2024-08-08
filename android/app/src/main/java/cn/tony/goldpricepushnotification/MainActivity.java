@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -23,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        setShowWhenLocked(true);
         setContentView(R.layout.activity_main);
 
         TextView textView = (TextView) findViewById(R.id.gold_sell_price);
@@ -46,6 +49,17 @@ public class MainActivity extends AppCompatActivity {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("cn.tony.gold.price");
         registerReceiver(receiver, intentFilter, Context.RECEIVER_EXPORTED);
+
+        Button btn = (Button) findViewById(R.id.test_btn);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setAction("cn.tony.gold.price");
+                intent.putExtra("content", "hello");
+                sendBroadcast(intent);
+            }
+        });
 
     }
 
