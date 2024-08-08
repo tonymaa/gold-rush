@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import cn.tony.goldpricepushnotification.R;
+import cn.tony.goldpricepushnotification.entity.GoldPrice;
 import cn.tony.goldpricepushnotification.service.MyForegroundService;
 
 public class DemoWidgetProvider extends AppWidgetProvider {
@@ -22,16 +23,19 @@ public class DemoWidgetProvider extends AppWidgetProvider {
         super.onReceive(context, intent);
         String intentAction = intent.getAction();
         if ("cn.tony.gold.price".equals(intentAction)) {
-            String content = intent.getStringExtra("content");
-            // 处理接收到的内容
-            Log.d("BroadcastReceiver", "Received content: " + content);
+            GoldPrice goldPrice = intent.getSerializableExtra("goldPrice", GoldPrice.class);
 
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName thisWidget = new ComponentName(context, DemoWidgetProvider.class);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
 
             for (int appWidgetId : appWidgetIds) {
-                updateAppWidget(context, appWidgetManager, appWidgetId, content);
+                updateAppWidget(
+                        context,
+                        appWidgetManager,
+                        appWidgetId,
+                        String.format("买入价：%s, 卖出价：%s", goldPrice.getBid(), goldPrice.getSell())
+                );
             }
         }
     }

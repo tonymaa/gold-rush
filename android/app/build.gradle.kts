@@ -4,8 +4,10 @@ plugins {
 
 android {
     namespace = "cn.tony.goldpricepushnotification"
-    compileSdk = 34
-
+    compileSdk = 35
+    buildFeatures {
+        dataBinding = true
+    }
     defaultConfig {
         applicationId = "cn.tony.goldpricepushnotification"
         minSdk = 34

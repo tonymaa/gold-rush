@@ -12,13 +12,17 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 
+import cn.tony.goldpricepushnotification.databinding.ActivityMainBinding;
+import cn.tony.goldpricepushnotification.entity.GoldPrice;
 import cn.tony.goldpricepushnotification.service.MyForegroundService;
 
 
 public class MainActivity extends AppCompatActivity {
     BroadcastReceiver receiver;
+    ActivityMainBinding mainBinding;
 
 
     @Override
@@ -27,17 +31,15 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setShowWhenLocked(true);
         setContentView(R.layout.activity_main);
+        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-        TextView textView = (TextView) findViewById(R.id.gold_sell_price);
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String intentAction = intent.getAction();
                 if ("cn.tony.gold.price".equals(intentAction)) {
-                    String content = intent.getStringExtra("content");
-                    // 处理接收到的内容
-                    Log.d("BroadcastReceiver", "Received content: " + content);
-                    textView.setText(content);
+                    GoldPrice goldPrice = intent.getSerializableExtra("goldPrice", GoldPrice.class);
+                    mainBinding.setGoldPrice(goldPrice);
                 }
             }
         };
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction("cn.tony.gold.price");
         registerReceiver(receiver, intentFilter, Context.RECEIVER_EXPORTED);
 
-        Button btn = (Button) findViewById(R.id.test_btn);
+    /*    Button btn = (Button) findViewById(R.id.test_btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("content", "hello");
                 sendBroadcast(intent);
             }
-        });
+        });*/
 
     }
 

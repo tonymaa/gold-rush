@@ -1,8 +1,9 @@
 package cn.tony.goldpricepushnotification.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class GoldPrice {
+public class GoldPrice implements Serializable {
     Date updateDate;
     Double bid;
     Double sell;

@@ -105,7 +105,7 @@ public class MyForegroundService extends Service {
     private void sendUpdateBroadcastToUpdateGoldPrice(GoldPrice goldPrice) {
         Intent intent = new Intent();
         intent.setAction("cn.tony.gold.price");
-        intent.putExtra("content", String.format("买入价：%s, 卖出价：%s", goldPrice.getBid(), goldPrice.getSell()));
+        intent.putExtra("goldPrice", goldPrice);
         sendBroadcast(intent);
         intent.setComponent(new ComponentName(this, DemoWidgetProvider.class));
         sendBroadcast(intent);
