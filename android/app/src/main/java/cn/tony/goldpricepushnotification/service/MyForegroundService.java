@@ -22,6 +22,7 @@ import cn.tony.goldpricepushnotification.dao.GoldPriceDao;
 import cn.tony.goldpricepushnotification.database.AppDatabase;
 import cn.tony.goldpricepushnotification.entity.GoldPrice;
 import cn.tony.goldpricepushnotification.entity.GoldPriceAlert;
+import cn.tony.goldpricepushnotification.entity.User;
 import cn.tony.goldpricepushnotification.widget.DemoWidgetProvider;
 
 
@@ -47,6 +48,8 @@ public class MyForegroundService extends Service {
                 while (true) {
                     // 更新状态栏通知的数据
                     GoldPrice goldPrice = goldService.getCnBankGoldPrice();
+                    User user = appDatabase.userDao().getById(1);
+                    goldPrice.setGoldEarnings((user.goldWeight * goldPrice.getSell()) - user.getGoldCapital());
                     updateNotification(String.format("买入价：%s, 卖出价：%s", goldPrice.getBid(), goldPrice.getSell()));
                     sendUpdateBroadcastToUpdateGoldPrice(goldPrice);
                     try {

@@ -22,6 +22,15 @@ public class GoldPrice implements Serializable {
     Double bid;
     @ColumnInfo(name = "sell")
     Double sell;
+    Double goldEarnings;
+
+    public Double getGoldEarnings() {
+        return goldEarnings;
+    }
+
+    public void setGoldEarnings(Double goldEarnings) {
+        this.goldEarnings = goldEarnings;
+    }
 
     public String getUpdateDate() {
         return updateDate;
