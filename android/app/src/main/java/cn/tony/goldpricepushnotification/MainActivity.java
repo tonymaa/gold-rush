@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         appDatabase = AppDatabase.getInstance(this);
         EdgeToEdge.enable(this);
-        setShowWhenLocked(true);
         setContentView(R.layout.activity_main);
         mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
