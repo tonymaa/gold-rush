@@ -12,20 +12,28 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+import androidx.room.Room;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import cn.tony.goldpricepushnotification.R;
+import cn.tony.goldpricepushnotification.dao.GoldPriceDao;
+import cn.tony.goldpricepushnotification.database.AppDatabase;
 import cn.tony.goldpricepushnotification.entity.GoldPrice;
+import cn.tony.goldpricepushnotification.entity.GoldPriceAlert;
 import cn.tony.goldpricepushnotification.widget.DemoWidgetProvider;
 
 
 public class MyForegroundService extends Service {
-    private static final String CHANNEL_ID = "ForegroundServiceChannel";
+    AppDatabase appDatabase;
+    private static final String CHANNEL_GOLD_PRICE_NOTIFY_NORMAL = "GOLD_PRICE_NOTIFY_NORMAL";
+    private static final String CHANNEL_GOLD_PRICE_NOTIFY_IMPORTANT = "GOLD_PRICE_NOTIFY_IMPORTANT";
 
     @Override
     public void onCreate() {
         super.onCreate();
+        appDatabase = AppDatabase.getInstance(this);
         createNotificationChannel();
     }
 
@@ -38,7 +46,6 @@ public class MyForegroundService extends Service {
                 GoldService goldService = new GoldService();
                 while (true) {
                     // 更新状态栏通知的数据
-//                    getBKCNGoldPrice();
                     GoldPrice goldPrice = goldService.getCnBankGoldPrice();
                     updateNotification(String.format("买入价：%s, 卖出价：%s", goldPrice.getBid(), goldPrice.getSell()));
                     sendUpdateBroadcastToUpdateGoldPrice(goldPrice);
@@ -74,26 +81,32 @@ public class MyForegroundService extends Service {
     }
 
     private void updateNotification(String newContent) {
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Foreground Service")
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_GOLD_PRICE_NOTIFY_NORMAL)
+                .setContentTitle("实时金价")
                 .setContentText(newContent)
                 .setSmallIcon(R.drawable.icon)
                 .build();
-
+        notification.flags |= Notification.FLAG_NO_CLEAR;
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         manager.notify(1, notification);
     }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel serviceChannel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Foreground Service Channel",
+            NotificationChannel normalChannel = new NotificationChannel(
+                    CHANNEL_GOLD_PRICE_NOTIFY_NORMAL,
+                    "实时金价通知",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
-
+            NotificationChannel importChannel = new NotificationChannel(
+                    CHANNEL_GOLD_PRICE_NOTIFY_IMPORTANT,
+                    "金价升值降价通知",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
             NotificationManager manager = getSystemService(NotificationManager.class);
-            manager.createNotificationChannel(serviceChannel);
+            manager.createNotificationChannels(
+                    Arrays.asList(new NotificationChannel[]{normalChannel, importChannel})
+            );
         }
     }
     private String getData() {
@@ -103,11 +116,38 @@ public class MyForegroundService extends Service {
 
 
     private void sendUpdateBroadcastToUpdateGoldPrice(GoldPrice goldPrice) {
+        GoldPriceDao goldPriceDao = appDatabase.goldPriceDao();
+        goldPriceDao.insertAll(goldPrice);
         Intent intent = new Intent();
         intent.setAction("cn.tony.gold.price");
         intent.putExtra("goldPrice", goldPrice);
         sendBroadcast(intent);
         intent.setComponent(new ComponentName(this, DemoWidgetProvider.class));
         sendBroadcast(intent);
+        alertUser(goldPrice);
     }
+
+    public void alertUser(GoldPrice goldPrice){
+        GoldPriceAlert goldPriceAlert = appDatabase.goldPriceAlertDao().getById(1);
+        if (goldPrice.getBid() < goldPriceAlert.getLeftPoint()){
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_GOLD_PRICE_NOTIFY_IMPORTANT)
+                    .setContentTitle(String.format("黄金清仓大甩卖", goldPrice.getBid(), goldPrice.getBid(), goldPrice.getBid()))
+                    .setContentText(String.format("买入价：%s, 卖出价：%s", goldPrice.getBid(), goldPrice.getSell()))
+                    .setSmallIcon(R.drawable.icon)
+                    .build();
+            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            manager.notify(1, notification);
+        }
+        if (goldPrice.getSell() > goldPriceAlert.getRightPoint()){
+            Notification notification = new NotificationCompat.Builder(this, CHANNEL_GOLD_PRICE_NOTIFY_IMPORTANT)
+                    .setContentTitle(String.format("黄金涨价", goldPrice.getSell(), goldPrice.getSell(), goldPrice.getSell()))
+                    .setContentText(String.format("买入价：%s, 卖出价：%s", goldPrice.getBid(), goldPrice.getSell()))
+                    .setSmallIcon(R.drawable.icon)
+                    .build();
+            NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            manager.notify(1, notification);
+        }
+    }
+
+
 }

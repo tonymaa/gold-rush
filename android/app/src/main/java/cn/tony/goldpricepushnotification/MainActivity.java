@@ -5,29 +5,36 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
+
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
 
+
+import cn.tony.goldpricepushnotification.database.AppDatabase;
 import cn.tony.goldpricepushnotification.databinding.ActivityMainBinding;
 import cn.tony.goldpricepushnotification.entity.GoldPrice;
+import cn.tony.goldpricepushnotification.entity.GoldPriceAlert;
 import cn.tony.goldpricepushnotification.service.MyForegroundService;
 
 
 public class MainActivity extends AppCompatActivity {
+    final String MainActivityTag = "MainActivity";
     BroadcastReceiver receiver;
     ActivityMainBinding mainBinding;
+    AppDatabase appDatabase;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appDatabase = AppDatabase.getInstance(this);
         EdgeToEdge.enable(this);
         setShowWhenLocked(true);
         setContentView(R.layout.activity_main);
@@ -52,6 +59,35 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction("cn.tony.gold.price");
         registerReceiver(receiver, intentFilter, Context.RECEIVER_EXPORTED);
 
+        mainBinding.setGoldPriceAlert(appDatabase.goldPriceAlertDao().getById(1));
+        EditText alertBid = (EditText) findViewById(R.id.gold_price_alert_bid);
+        alertBid.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                appDatabase.goldPriceAlertDao().updateBid(1, s.toString());
+            }
+        });
+        EditText alertSell = (EditText) findViewById(R.id.gold_price_alert_sell);
+        alertSell.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                appDatabase.goldPriceAlertDao().updateSell(1, s.toString());
+            }
+        });
     /*    Button btn = (Button) findViewById(R.id.test_btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
