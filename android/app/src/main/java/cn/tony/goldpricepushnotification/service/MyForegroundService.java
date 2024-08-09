@@ -84,7 +84,7 @@ public class MyForegroundService extends Service {
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_GOLD_PRICE_NOTIFY_NORMAL)
                 .setContentTitle("实时金价")
                 .setContentText(newContent)
-                .setSmallIcon(R.drawable.icon)
+                .setSmallIcon(R.drawable.ic_launcher)
                 .build();
         notification.flags |= Notification.FLAG_NO_CLEAR;
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -133,7 +133,7 @@ public class MyForegroundService extends Service {
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_GOLD_PRICE_NOTIFY_IMPORTANT)
                     .setContentTitle(String.format("黄金清仓大甩卖", goldPrice.getBid(), goldPrice.getBid(), goldPrice.getBid()))
                     .setContentText(String.format("买入价：%s, 卖出价：%s", goldPrice.getBid(), goldPrice.getSell()))
-                    .setSmallIcon(R.drawable.icon)
+                    .setSmallIcon(R.drawable.ic_launcher)
                     .build();
             NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             manager.notify(1, notification);
@@ -142,7 +142,7 @@ public class MyForegroundService extends Service {
             Notification notification = new NotificationCompat.Builder(this, CHANNEL_GOLD_PRICE_NOTIFY_IMPORTANT)
                     .setContentTitle(String.format("黄金涨价", goldPrice.getSell(), goldPrice.getSell(), goldPrice.getSell()))
                     .setContentText(String.format("买入价：%s, 卖出价：%s", goldPrice.getBid(), goldPrice.getSell()))
-                    .setSmallIcon(R.drawable.icon)
+                    .setSmallIcon(R.drawable.ic_launcher)
                     .build();
             NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
             manager.notify(1, notification);
