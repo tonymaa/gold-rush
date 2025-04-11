@@ -6,6 +6,7 @@ import { goldRecordApi } from '../services/api';
 import type { GoldRecord } from '../types/GoldRecord';
 import styled from 'styled-components';
 import CountUp from 'react-countup';
+import moment from "moment/moment";
 
 const formatter: StatisticProps['formatter'] = (value) => (
     <CountUp end={value as number} separator="," decimals={2} duration={0.3}/>
@@ -312,7 +313,7 @@ const GoldRecordPage: React.FC = () => {
                                                 收益：{profit >= 0 ? '+' : ''}{profit?.toFixed(2)}
                                             </Text>
                                             <br />
-                                            <Text style={{ color: '#999' }}>{record.purchaseDate}</Text>
+                                            <Text style={{ color: '#999' }}>{moment(record.purchaseDate).format('YYYY-MM-DD HH:mm:ss')}</Text>
                                         </div>
                                     </div>
                                 </div>
