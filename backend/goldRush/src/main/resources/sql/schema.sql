@@ -36,3 +36,5 @@ CREATE TABLE gold_record (
     is_summary INTEGER NOT NULL,             -- 是否是汇总模式（1为汇总模式，0为明细模式）
     create_time TEXT NOT NULL                -- 创建时间
 );
+
+alter table gold_record drop column is_summary

@@ -9,5 +9,4 @@ import java.util.List;
 @Repository
 public interface GoldRecordRepository extends JpaRepository<GoldRecord, Long> {
     List<GoldRecord> findByPurchaseDateBetweenOrderByPurchaseDateDesc(String start, String end);
-    List<GoldRecord> findByIsSummaryOrderByPurchaseDateDesc(Boolean isSummary);
 } 

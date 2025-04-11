@@ -33,9 +33,9 @@ public class GoldRecord {
     @Column(length = 200)
     private String photoUrl; // 照片URL
 
-    @Column(nullable = false)
+    /*@Column(nullable = false)
     private Boolean isSummary; // 是否是汇总模式（true为汇总模式，false为明细模式）
-
+*/
     @Column(nullable = false)
     private String createTime;
 
