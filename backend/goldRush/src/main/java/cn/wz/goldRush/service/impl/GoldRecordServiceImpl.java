@@ -4,6 +4,7 @@ import cn.wz.goldRush.entity.GoldRecord;
 import cn.wz.goldRush.repository.GoldRecordRepository;
 import cn.wz.goldRush.service.GoldRecordService;
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -54,6 +55,7 @@ public class GoldRecordServiceImpl implements GoldRecordService {
         }
 
         record.setId(id);
+        record.setterCreateTime(existingRecord.getterCreateTime());
         return goldRecordRepository.save(record);
     }
 

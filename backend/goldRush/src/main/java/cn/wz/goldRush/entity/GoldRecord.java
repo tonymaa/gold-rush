@@ -27,7 +27,7 @@ public class GoldRecord {
     @Column(length = 500)
     private String remarks; // 备注
 
-    @Column(nullable = false)
+    @Column
     private String purchaseDate; // 购买日期
 
     @Column(length = 200)
@@ -36,7 +36,7 @@ public class GoldRecord {
     /*@Column(nullable = false)
     private Boolean isSummary; // 是否是汇总模式（true为汇总模式，false为明细模式）
 */
-    @Column(nullable = false)
+    @Column
     private String createTime;
 
     @PrePersist
@@ -44,7 +44,11 @@ public class GoldRecord {
         if (createTime == null) {
             setterCreateTime(new Date());
         }
+        if (purchaseDate == null) {
+            setterPurchaseDate(new Date());
+        }
     }
+
     public Date getterCreateTime() {
         try {
             return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(createTime);

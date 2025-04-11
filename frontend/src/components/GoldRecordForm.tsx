@@ -128,7 +128,6 @@ const GoldRecordForm: React.FC<Props> = ({ initialValues, onSubmit }) => {
             <Form.Item
                 label="购买日期"
                 name="purchaseDate"
-                rules={[{ required: true, message: '请选择购买日期' }]}
             >
                 <DatePicker showTime style={{ width: '100%' }} />
             </Form.Item>
