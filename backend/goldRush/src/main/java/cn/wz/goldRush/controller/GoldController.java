@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(path = "/api/v1/gold")
-@CrossOrigin(origins = "http://localhost:3000")
 public class GoldController {
     @Autowired
     GoldService goldService;
@@ -24,11 +23,9 @@ public class GoldController {
     @Autowired
     EmailService emailService;
 
-    @GetMapping("price")
+    @GetMapping("/price")
     public ResponseInfo price(){
         GoldPrice goldPrice = goldService.getCnBankGoldPrice();
-        // do send email
-        emailService.sendSimpleEmail("1285242979@qq.com", "test title", "test body");
         return ResponseInfo.success(goldPrice);
     }
 }
