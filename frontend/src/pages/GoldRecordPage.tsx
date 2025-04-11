@@ -225,7 +225,6 @@ const GoldRecordPage: React.FC = () => {
                             title="预估收益（元）"
                             value={estimatedProfit}
                             precision={2}
-                            prefix={estimatedProfit >= 0 ? '+' : ''}
                             $isPositive={estimatedProfit >= 0}
                             formatter={formatter}
                         />
