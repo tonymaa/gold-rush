@@ -14,7 +14,7 @@ code {
 }
 
 .ant-layout {
-  background: #f0f2f5 !important;
+  background: #f0f2f5;
 }
 
 .ant-card {
@@ -26,3 +26,14 @@ code {
 .ant-modal-content {
   padding: 24px !important;
 }
+
+
+/*
+.ant-modal .ant-modal-content{
+  color: white;
+  background-color: #1a1a1a;
+}
+.ant-modal-title{
+  color: white !important;
+  background-color: #1a1a1a;
+}*/
