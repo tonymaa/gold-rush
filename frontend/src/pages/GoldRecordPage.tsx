@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Button, Modal, message, Typography, Space, List } from 'antd';
+import {Layout, Card, Button, Modal, message, Typography, Space, List, Statistic, StatisticProps} from 'antd';
 import { PlusOutlined, FilterOutlined, SortDescendingOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import GoldRecordForm from '../components/GoldRecordForm';
 import { goldRecordApi } from '../services/api';
 import type { GoldRecord } from '../types/GoldRecord';
 import styled from 'styled-components';
+import CountUp from 'react-countup';
 
+const formatter: StatisticProps['formatter'] = (value) => (
+    <CountUp end={value as number} separator="," decimals={2} duration={0.3}/>
+);
 const { Content } = Layout;
 const { Title, Text } = Typography;
 
@@ -75,6 +79,41 @@ const IconButton = styled.span`
   &:hover {
     color: #ffd700;
   }
+`;
+
+const StyledStatistic = styled(Statistic)`
+    .ant-statistic-content-value {
+        color: white !important;
+        font-size: 16px !important;
+    }
+    .ant-statistic-title {
+        color: #999 !important;
+        margin-bottom: 4px !important;
+    }
+`;
+
+const ProfitStatistic = styled(Statistic)<{ $isPositive: boolean }>`
+    .ant-statistic-content-value {
+        color: ${props => props.$isPositive ? '#ff4d4f' : '#52c41a'} !important;
+        font-size: 16px !important;
+    }
+    .ant-statistic-title {
+        color: #999 !important;
+        margin-bottom: 4px !important;
+    }
+`;
+
+const GoldPriceStatistic = styled(Statistic)`
+    .ant-statistic-content {
+        color: #ffd700 !important;
+        font-size: 16px !important;
+        text-align: center;
+    }
+    .ant-statistic-title {
+        color: #999 !important;
+        text-align: center;
+        margin-bottom: 4px !important;
+    }
 `;
 
 const GoldRecordPage: React.FC = () => {
@@ -169,27 +208,35 @@ const GoldRecordPage: React.FC = () => {
                     </Title>
                     <GoldAmount>{totalWeight?.toFixed(2)}</GoldAmount>
                     <Space style={{ width: '100%', justifyContent: 'space-between' }}>
-                        <div>
-                            <Text style={{ color: '#999' }}>购入总价（元）</Text>
-                            <br />
-                            <Text style={{ color: 'white' }}>{totalCost?.toFixed(2)}</Text>
-                        </div>
-                        <div>
-                            <Text style={{ color: '#999' }}>预估价值（元）</Text>
-                            <br />
-                            <Text style={{ color: 'white' }}>{estimatedValue?.toFixed(2)}</Text>
-                        </div>
-                        <div>
-                            <Text style={{ color: '#999' }}>预估收益（元）</Text>
-                            <br />
-                            <Text style={{ color: estimatedProfit >= 0 ? '#ff4d4f' : '#52c41a' }}>
-                                {estimatedProfit?.toFixed(2)}
-                            </Text>
-                        </div>
+                        <StyledStatistic
+                            title="购入总价（元）"
+                            value={totalCost}
+                            precision={2}
+                            formatter={formatter}
+                        />
+                        <StyledStatistic
+                            title="预估价值（元）"
+                            value={estimatedValue}
+                            precision={2}
+                            formatter={formatter}
+                        />
+                        <ProfitStatistic
+                            title="预估收益（元）"
+                            value={estimatedProfit}
+                            precision={2}
+                            prefix={estimatedProfit >= 0 ? '+' : ''}
+                            $isPositive={estimatedProfit >= 0}
+                            formatter={formatter}
+                        />
                     </Space>
-                    <div style={{ marginTop: 16, textAlign: 'center' }}>
-                        <Text style={{ color: '#999' }}>当前金价：</Text>
-                        <Text style={{ color: '#ffd700' }}>{currentGoldPrice?.toFixed(2)}元/克</Text>
+                    <div style={{ marginTop: 16 }}>
+                        <GoldPriceStatistic
+                            title="当前金价"
+                            value={currentGoldPrice}
+                            precision={2}
+                            suffix="元/克"
+                            formatter={formatter}
+                        />
                     </div>
                 </SummaryCard>
 
