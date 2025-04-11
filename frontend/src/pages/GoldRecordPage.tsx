@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Button, Modal, message, Typography, Space, List, Tag } from 'antd';
+import { Layout, Card, Button, Modal, message, Typography, Space, List } from 'antd';
 import { PlusOutlined, FilterOutlined, SortDescendingOutlined } from '@ant-design/icons';
 import GoldRecordForm from '../components/GoldRecordForm';
 import { goldRecordApi } from '../services/api';
@@ -45,7 +45,7 @@ const StyledList = styled(List)`
     border-radius: 8px;
     border: none;
   }
-`;
+` as typeof List;
 
 const PriceTag = styled.div`
   background: #ffd700;
@@ -71,13 +71,23 @@ const GoldRecordPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [editingRecord, setEditingRecord] = useState<GoldRecord | undefined>();
+    const [currentGoldPrice, setCurrentGoldPrice] = useState<number>(0);
 
     // 计算总计数据
     const totalWeight = records.reduce((sum, record) => sum + Number(record.weight), 0);
     const totalCost = records.reduce((sum, record) => sum + Number(record.totalPrice), 0);
-    const currentGoldPrice = 742.99; // 这里应该从API获取实时金价
     const estimatedValue = totalWeight * currentGoldPrice;
     const estimatedProfit = estimatedValue - totalCost;
+
+    const fetchCurrentPrice = async () => {
+        try {
+            const price = await goldRecordApi.getCurrentGoldPrice();
+            setCurrentGoldPrice(price.data.sell);
+        } catch (error) {
+            message.error('获取金价失败');
+            console.error(error);
+        }
+    };
 
     const fetchRecords = async () => {
         try {
@@ -93,7 +103,12 @@ const GoldRecordPage: React.FC = () => {
     };
 
     useEffect(() => {
+        fetchCurrentPrice();
         fetchRecords();
+
+        // 每分钟更新一次金价
+        const priceInterval = setInterval(fetchCurrentPrice, 10000);
+        return () => clearInterval(priceInterval);
     }, []);
 
     const handleCreate = async (record: GoldRecord, photo?: File) => {
@@ -141,26 +156,30 @@ const GoldRecordPage: React.FC = () => {
                     <Title level={5} style={{ color: 'white', textAlign: 'center', margin: 0 }}>
                         总重量（克）
                     </Title>
-                    <GoldAmount>{totalWeight.toFixed(2)}</GoldAmount>
+                    <GoldAmount>{totalWeight?.toFixed(2)}</GoldAmount>
                     <Space style={{ width: '100%', justifyContent: 'space-between' }}>
                         <div>
                             <Text style={{ color: '#999' }}>购入总价（元）</Text>
                             <br />
-                            <Text style={{ color: 'white' }}>{totalCost.toFixed(2)}</Text>
+                            <Text style={{ color: 'white' }}>{totalCost?.toFixed(2)}</Text>
                         </div>
                         <div>
                             <Text style={{ color: '#999' }}>预估价值（元）</Text>
                             <br />
-                            <Text style={{ color: 'white' }}>{estimatedValue.toFixed(2)}</Text>
+                            <Text style={{ color: 'white' }}>{estimatedValue?.toFixed(2)}</Text>
                         </div>
                         <div>
                             <Text style={{ color: '#999' }}>预估收益（元）</Text>
                             <br />
                             <Text style={{ color: estimatedProfit >= 0 ? '#ff4d4f' : '#52c41a' }}>
-                                {estimatedProfit.toFixed(2)}
+                                {estimatedProfit?.toFixed(2)}
                             </Text>
                         </div>
                     </Space>
+                    <div style={{ marginTop: 16, textAlign: 'center' }}>
+                        <Text style={{ color: '#999' }}>当前金价：</Text>
+                        <Text style={{ color: '#ffd700' }}>{currentGoldPrice?.toFixed(2)}元/克</Text>
+                    </div>
                 </SummaryCard>
 
                 <Space style={{ marginBottom: 16, width: '100%', justifyContent: 'space-between' }}>
@@ -184,7 +203,7 @@ const GoldRecordPage: React.FC = () => {
                 <StyledList
                     loading={loading}
                     dataSource={records}
-                    renderItem={(record) => {
+                    renderItem={(record: GoldRecord) => {
                         const profit = calculateProfit(record);
                         const pricePerGram = Number(record.totalPrice) / Number(record.weight);
                         
@@ -207,7 +226,7 @@ const GoldRecordPage: React.FC = () => {
                                         </div>
                                         <div style={{ textAlign: 'right' }}>
                                             <Text style={{ color: profit >= 0 ? '#ff4d4f' : '#52c41a' }}>
-                                                收益：{profit >= 0 ? '+' : ''}{profit.toFixed(2)}
+                                                收益：{profit >= 0 ? '+' : ''}{profit?.toFixed(2)}
                                             </Text>
                                             <br />
                                             <Text style={{ color: '#999' }}>{record.purchaseDate}</Text>

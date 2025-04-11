@@ -4,6 +4,11 @@ import { GoldRecord } from '../types/GoldRecord';
 const API_BASE_URL = '/api';
 
 export const goldRecordApi = {
+    async getCurrentGoldPrice() {
+        const response = await axios.get(`${API_BASE_URL}/gold/price`);
+        return response.data;
+    },
+
     async createRecord(record: GoldRecord, photo?: File) {
         const formData = new FormData();
         formData.append('record', new Blob([JSON.stringify(record)], { type: 'application/json' }));
