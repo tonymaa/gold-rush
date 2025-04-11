@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Card, Button, Modal, message, Typography, Space, List } from 'antd';
-import { PlusOutlined, FilterOutlined, SortDescendingOutlined } from '@ant-design/icons';
+import { PlusOutlined, FilterOutlined, SortDescendingOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import GoldRecordForm from '../components/GoldRecordForm';
 import { goldRecordApi } from '../services/api';
 import type { GoldRecord } from '../types/GoldRecord';
@@ -209,11 +209,29 @@ const GoldRecordPage: React.FC = () => {
                         
                         return (
                             <List.Item
-                                onClick={() => handleDelete(record.id!)}
                                 style={{ cursor: 'pointer' }}
                             >
                                 <div style={{ width: '100%' }}>
-                                    <PriceTag>{pricePerGram.toFixed(2)}元/克</PriceTag>
+                                    <div style={{display: 'flex'}}>
+                                        <div>
+                                            <PriceTag>{pricePerGram.toFixed(2)}元/克</PriceTag>
+                                        </div>
+                                        <div style={{flex: 1, textAlign: 'right'}}>
+                                            <div style={{display: 'flex', gap: '22px'}}>
+                                                <div style={{flex: 1}}/>
+                                                <EditOutlined />
+                                                <DeleteOutlined onClick={() => {
+                                                    Modal.confirm({
+                                                        title: '删除？',
+                                                        content: '确认删除吗？',
+                                                        onOk: () => {
+                                                            handleDelete(record.id!)
+                                                        }
+                                                    })
+                                                }}/>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <div>
                                             <Text style={{ color: 'white', fontSize: '16px' }}>
