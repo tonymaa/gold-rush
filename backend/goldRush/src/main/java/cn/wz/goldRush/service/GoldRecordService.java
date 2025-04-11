@@ -9,6 +9,6 @@ public interface GoldRecordService {
     GoldRecord updateRecord(Long id, GoldRecord record, MultipartFile photo);
     void deleteRecord(Long id);
     GoldRecord getRecord(Long id);
-    List<GoldRecord> getAllRecords(Boolean isSummary);
+    List<GoldRecord> getAllRecords();
     List<GoldRecord> getRecordsByDateRange(String startDate, String endDate);
 } 

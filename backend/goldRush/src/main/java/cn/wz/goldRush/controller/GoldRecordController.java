@@ -44,9 +44,8 @@ public class GoldRecordController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GoldRecord>> getAllRecords(
-            @RequestParam(required = false) Boolean isSummary) {
-        return ResponseEntity.ok(goldRecordService.getAllRecords(isSummary));
+    public ResponseEntity<List<GoldRecord>> getAllRecords() {
+        return ResponseEntity.ok(goldRecordService.getAllRecords());
     }
 
     @GetMapping("/by-date-range")

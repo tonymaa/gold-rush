@@ -76,16 +76,13 @@ public class GoldRecordServiceImpl implements GoldRecordService {
     }
 
     @Override
-    public List<GoldRecord> getAllRecords(Boolean isSummary) {
-        return goldRecordRepository.findByIsSummaryOrderByPurchaseDateDesc(isSummary);
+    public List<GoldRecord> getAllRecords() {
+        return goldRecordRepository.findAll();
     }
 
     @Override
     public List<GoldRecord> getRecordsByDateRange(String startDate, String endDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDateTime start = LocalDate.parse(startDate, formatter).atStartOfDay();
-        LocalDateTime end = LocalDate.parse(endDate, formatter).atTime(LocalTime.MAX);
-        return goldRecordRepository.findByPurchaseDateBetweenOrderByPurchaseDateDesc(start, end);
+        return goldRecordRepository.findByPurchaseDateBetweenOrderByPurchaseDateDesc(startDate, endDate);
     }
 
     private String savePhoto(MultipartFile photo) {

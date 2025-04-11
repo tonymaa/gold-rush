@@ -39,7 +39,7 @@ const GoldRecordList: React.FC<Props> = ({ records, onEdit, onDelete, loading })
             title: '购买日期',
             dataIndex: 'purchaseDate',
             key: 'purchaseDate',
-            render: (date: string) => moment(date).format('YYYY-MM-DD'),
+            render: (date: string) => moment(date).format('YYYY-MM-DD HH:mm:ss'),
             sorter: (a: GoldRecord, b: GoldRecord) => 
                 moment(a.purchaseDate).valueOf() - moment(b.purchaseDate).valueOf(),
         },
@@ -57,7 +57,7 @@ const GoldRecordList: React.FC<Props> = ({ records, onEdit, onDelete, loading })
                 />
             ) : null,
         },
-        {
+/*        {
             title: '模式',
             dataIndex: 'isSummary',
             key: 'isSummary',
@@ -67,7 +67,7 @@ const GoldRecordList: React.FC<Props> = ({ records, onEdit, onDelete, loading })
                 { text: '明细模式', value: false },
             ],
             onFilter: (value: boolean, record: GoldRecord) => record.isSummary === value,
-        },
+        },*/
         {
             title: '操作',
             key: 'action',

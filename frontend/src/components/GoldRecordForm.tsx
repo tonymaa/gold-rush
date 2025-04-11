@@ -109,13 +109,13 @@ const GoldRecordForm: React.FC<Props> = ({ initialValues, onSubmit }) => {
                 </Upload>
             </Form.Item>
 
-            <Form.Item
+            {/*<Form.Item
                 label="汇总模式"
                 name="isSummary"
                 valuePropName="checked"
             >
                 <Switch />
-            </Form.Item>
+            </Form.Item>*/}
 
             <Form.Item>
                 <Button type="primary" htmlType="submit" loading={loading} block>
