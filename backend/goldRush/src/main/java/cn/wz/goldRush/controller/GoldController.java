@@ -1,6 +1,7 @@
 package cn.wz.goldRush.controller;
 
 import cn.wz.goldRush.entity.GoldPrice;
+import cn.wz.goldRush.respository.GoldPriceJpaRepository;
 import cn.wz.goldRush.respository.UserJpaRepository;
 import cn.wz.goldRush.service.EmailService;
 import cn.wz.goldRush.service.GoldService;
@@ -22,10 +23,11 @@ public class GoldController {
 
     @Autowired
     EmailService emailService;
-
+    @Autowired
+    GoldPriceJpaRepository goldPriceJpaRepository;
     @GetMapping("/price")
     public ResponseInfo price(){
-        GoldPrice goldPrice = goldService.getCnBankGoldPrice();
+        GoldPrice goldPrice = goldPriceJpaRepository.findTopByOrderByUpdateDate();
         return ResponseInfo.success(goldPrice);
     }
 }

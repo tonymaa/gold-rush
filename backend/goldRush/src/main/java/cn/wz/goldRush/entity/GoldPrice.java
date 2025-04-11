@@ -32,6 +32,8 @@ public class GoldPrice extends BaseEntity{
     }
 
     public void setterUpdateDate(Date updateDate) {
-        this.updateDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(updateDate);
+        if (updateDate != null) {
+            this.updateDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(updateDate);
+        }
     }
 }
