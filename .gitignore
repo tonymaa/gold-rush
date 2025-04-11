@@ -20,6 +20,7 @@ target/
 *.iml
 *.ipr
 /.gradle/
+./android/.gradle/
 
 ### NetBeans ###
 /nbproject/private/
