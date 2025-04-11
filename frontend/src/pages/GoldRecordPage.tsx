@@ -66,6 +66,17 @@ const ActionButton = styled(Button)`
   }
 `;
 
+const IconButton = styled.span`
+  color: #999;
+  cursor: pointer;
+  padding: 4px;
+  transition: all 0.3s;
+  
+  &:hover {
+    color: #ffd700;
+  }
+`;
+
 const GoldRecordPage: React.FC = () => {
     const [records, setRecords] = useState<GoldRecord[]>([]);
     const [loading, setLoading] = useState(false);
@@ -219,8 +230,13 @@ const GoldRecordPage: React.FC = () => {
                                         <div style={{flex: 1, textAlign: 'right'}}>
                                             <div style={{display: 'flex', gap: '22px'}}>
                                                 <div style={{flex: 1}}/>
-                                                <EditOutlined />
-                                                <DeleteOutlined onClick={() => {
+                                                <IconButton onClick={() => {
+                                                    setEditingRecord(record);
+                                                    setModalVisible(true);
+                                                }}>
+                                                    <EditOutlined />
+                                                </IconButton>
+                                                <IconButton onClick={() => {
                                                     Modal.confirm({
                                                         title: '删除？',
                                                         content: '确认删除吗？',
@@ -228,7 +244,9 @@ const GoldRecordPage: React.FC = () => {
                                                             handleDelete(record.id!)
                                                         }
                                                     })
-                                                }}/>
+                                                }}>
+                                                    <DeleteOutlined />
+                                                </IconButton>
                                             </div>
                                         </div>
                                     </div>
