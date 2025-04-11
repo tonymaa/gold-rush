@@ -20,7 +20,7 @@ const GoldRecordForm: React.FC<Props> = ({ initialValues, onSubmit }) => {
             setLoading(true);
             const record: GoldRecord = {
                 ...values,
-                purchaseDate: values.purchaseDate.format('YYYY-MM-DD'),
+                purchaseDate: values.purchaseDate,
             };
             await onSubmit(record, photo);
             message.success('保存成功');
@@ -91,7 +91,7 @@ const GoldRecordForm: React.FC<Props> = ({ initialValues, onSubmit }) => {
                 name="purchaseDate"
                 rules={[{ required: true, message: '请选择购买日期' }]}
             >
-                <DatePicker style={{ width: '100%' }} />
+                <DatePicker showTime style={{ width: '100%' }} />
             </Form.Item>
 
             <Form.Item
