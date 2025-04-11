@@ -1,15 +1,15 @@
 import React from 'react';
+import { ConfigProvider } from 'antd';
+import zhCN from 'antd/locale/zh_CN';
+import GoldRecordPage from './pages/GoldRecordPage';
 import './App.css';
-import AddInfoForm from './page/addInfoForm'
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-        <div className='myContainer'>
-            <AddInfoForm />
-        </div>
-    </div>
+    <ConfigProvider locale={zhCN}>
+      <GoldRecordPage />
+    </ConfigProvider>
   );
-}
+};
 
 export default App;
