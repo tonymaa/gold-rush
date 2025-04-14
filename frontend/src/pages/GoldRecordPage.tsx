@@ -94,7 +94,7 @@ const StyledStatistic = styled(Statistic)`
 `;
 
 const ProfitStatistic = styled(Statistic)<{ $isPositive: boolean }>`
-    .ant-statistic-content-value {
+    .ant-statistic-content-value, .ant-statistic-content-suffix {
         color: ${props => props.$isPositive ? '#ff4d4f' : '#52c41a'} !important;
         font-size: 16px !important;
     }
@@ -221,13 +221,23 @@ const GoldRecordPage: React.FC = () => {
                             precision={2}
                             formatter={formatter}
                         />
-                        <ProfitStatistic
-                            title="预估收益（元）"
-                            value={estimatedProfit}
-                            precision={2}
-                            $isPositive={estimatedProfit >= 0}
-                            formatter={formatter}
-                        />
+                        <div>
+                            <ProfitStatistic
+                                title="预估收益（元）"
+                                value={estimatedProfit}
+                                precision={2}
+                                $isPositive={estimatedProfit >= 0}
+                                formatter={formatter}
+                                suffix={`/ ${((estimatedProfit / totalCost) * 100)?.toFixed(2)}%`}
+                            />
+                            {/*<ProfitStatistic
+                                value={((estimatedProfit / totalCost) * 100)?.toFixed(2)}
+                                precision={2}
+                                $isPositive={estimatedProfit >= 0}
+                                formatter={formatter}
+                                suffix={'%'}
+                            />*/}
+                        </div>
                     </Space>
                     <div style={{ marginTop: 16 }}>
                         <GoldPriceStatistic
@@ -309,7 +319,13 @@ const GoldRecordPage: React.FC = () => {
                                         </div>
                                         <div style={{ textAlign: 'right' }}>
                                             <Text style={{ color: profit >= 0 ? '#ff4d4f' : '#52c41a' }}>
-                                                收益：{profit >= 0 ? '+' : ''}{profit?.toFixed(2)}
+                                                <div style={{display: 'flex'}}>
+                                                    <div>收益：</div>
+                                                    <div style={{display: 'flex', flexDirection: 'column'}}>
+                                                        <div>{profit >= 0 ? '+' : ''}{profit?.toFixed(2)}</div>
+                                                        <div>{profit >= 0 ? '+' : ''}{((profit / record.totalPrice) * 100)?.toFixed(2)}%</div>
+                                                    </div>
+                                                </div>
                                             </Text>
                                             <br />
                                             <Text style={{ color: '#999' }}>{moment(record.purchaseDate).format('YYYY-MM-DD HH:mm:ss')}</Text>
