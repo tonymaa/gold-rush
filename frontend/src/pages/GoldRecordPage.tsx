@@ -228,7 +228,7 @@ const GoldRecordPage: React.FC = () => {
                                 precision={2}
                                 $isPositive={estimatedProfit >= 0}
                                 formatter={formatter}
-                                suffix={`/ ${((estimatedProfit / totalCost) * 100)?.toFixed(2)}%`}
+                                suffix={`/ ${isNaN((estimatedProfit / totalCost) * 100) ? 0 : ((estimatedProfit / totalCost) * 100)?.toFixed(2)}%`}
                             />
                             {/*<ProfitStatistic
                                 value={((estimatedProfit / totalCost) * 100)?.toFixed(2)}
