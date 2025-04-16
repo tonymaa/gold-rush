@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import {Layout, Card, Button, Modal, message, Typography, Space, List, Statistic, StatisticProps} from 'antd';
-import { PlusOutlined, FilterOutlined, SortDescendingOutlined, DeleteOutlined, EditOutlined, ImportOutlined, ExportOutlined } from '@ant-design/icons';
+import {
+    Layout,
+    Card,
+    Button,
+    Modal,
+    message,
+    Typography,
+    Space,
+    List,
+    Statistic,
+    StatisticProps,
+    Tooltip,
+    Menu, Dropdown
+} from 'antd';
+import { PlusOutlined, FilterOutlined, SortDescendingOutlined,MenuOutlined, DeleteOutlined, EditOutlined, ImportOutlined, ExportOutlined } from '@ant-design/icons';
 import GoldRecordForm from '../components/GoldRecordForm';
 import { goldRecordApi } from '../services/api';
 import type { GoldRecord } from '../types/GoldRecord';
@@ -288,14 +301,23 @@ const GoldRecordPage: React.FC = () => {
                             formatter={formatter}
                         />
                         <div>
-                            <ProfitStatistic
-                                title="预估收益（元）"
-                                value={estimatedProfit}
-                                precision={2}
-                                $isPositive={estimatedProfit >= 0}
-                                formatter={formatter}
-                                suffix={`/ ${isNaN((estimatedProfit / totalCost) * 100) ? 0 : ((estimatedProfit / totalCost) * 100)?.toFixed(2)}%`}
-                            />
+                            <Tooltip
+                                rootClassName={'tooltip-gold-record-profit'}
+                                color={estimatedProfit >= 0 ? '#ff4d4f' : '#52c41a'}
+                                title={`${isNaN((estimatedProfit / totalCost) * 100) ? 0 : ((estimatedProfit / totalCost) * 100)?.toFixed(2)}%`}
+                            >
+                                <span>
+                                    <ProfitStatistic
+                                        rootClassName={'profit-statistic'}
+                                        title="预估收益（元）"
+                                        value={estimatedProfit}
+                                        precision={2}
+                                        $isPositive={estimatedProfit >= 0}
+                                        formatter={formatter}
+                                        suffix={`/ ${isNaN((estimatedProfit / totalCost) * 100) ? 0 : ((estimatedProfit / totalCost) * 100)?.toFixed(2)}%`}
+                                    />
+                                </span>
+                            </Tooltip>
                             {/*<ProfitStatistic
                                 value={((estimatedProfit / totalCost) * 100)?.toFixed(2)}
                                 precision={2}
@@ -320,19 +342,40 @@ const GoldRecordPage: React.FC = () => {
                     <Space>
                         <ActionButton icon={<FilterOutlined />}>筛选</ActionButton>
                         <ActionButton icon={<SortDescendingOutlined />}>排序</ActionButton>
-                        <ActionButton icon={<ImportOutlined />} onClick={() => document.getElementById('fileInput')?.click()}>
-                            导入
-                        </ActionButton>
-                        <input
-                            id="fileInput"
-                            type="file"
-                            accept=".csv"
-                            style={{ display: 'none' }}
-                            onChange={handleImport}
-                        />
-                        <ActionButton icon={<ExportOutlined />} onClick={handleExport}>
-                            导出
-                        </ActionButton>
+                        <Dropdown menu={{
+                            items: [
+                                {
+                                    key: '1',
+                                    label: (
+                                        <>
+                                            <ActionButton icon={<ImportOutlined />} onClick={() => document.getElementById('fileInput')?.click()}>
+                                                导入
+                                            </ActionButton>
+                                            <input
+                                                id="fileInput"
+                                                type="file"
+                                                accept=".csv"
+                                                style={{ display: 'none' }}
+                                                onChange={handleImport}
+                                            />
+                                        </>
+                                    )
+                                },
+                                {
+                                    key: '2',
+                                    label: (
+                                        <ActionButton icon={<ExportOutlined />} onClick={handleExport}>
+                                            导出
+                                        </ActionButton>
+                                    )
+                                }
+                            ]
+                        }}
+                        >
+                            <ActionButton>
+                                <MenuOutlined/>
+                            </ActionButton>
+                        </Dropdown>
                     </Space>
                     <Button
                         type="primary"
