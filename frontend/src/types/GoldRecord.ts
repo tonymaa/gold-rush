@@ -6,6 +6,6 @@ export interface GoldRecord {
     remarks?: string;
     purchaseDate: string;
     photoUrl?: string;
-    isSummary: boolean;
+    isSummary?: boolean;
     createTime?: string;
 } 
