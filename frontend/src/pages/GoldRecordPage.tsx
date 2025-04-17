@@ -7,6 +7,7 @@ import type { GoldRecord } from '../types/GoldRecord';
 import styled from 'styled-components';
 import CountUp from 'react-countup';
 import moment from "moment/moment";
+import { Line } from '@ant-design/charts';
 
 const formatter: StatisticProps['formatter'] = (value) => (
     <CountUp end={value as number} separator="," decimals={2} duration={0.3}/>
@@ -123,6 +124,7 @@ const GoldRecordPage: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingRecord, setEditingRecord] = useState<GoldRecord | undefined>();
     const [currentGoldPrice, setCurrentGoldPrice] = useState<number>(0);
+    const [todayPrices, setTodayPrices] = useState<Array<any>>([]);
 
     // 计算总计数据
     const totalWeight = records.reduce((sum, record) => sum + Number(record.weight), 0);
@@ -140,6 +142,24 @@ const GoldRecordPage: React.FC = () => {
         }
     };
 
+    const fetchTodayPrices = async () => {
+        try {
+            const data = await goldRecordApi.getTodayPrices();
+            console.log(data)
+            const res = (data.data as any[]).map((item: any) => {
+                return {
+                    data: (item.updateDate as string).split(' ')[1],
+                    value: item.sell
+                }
+            })
+            setTodayPrices(res)
+
+        } catch (error) {
+            message.error('获取今日价格走向失败');
+            console.error(error);
+        }
+    }
+
     const fetchRecords = async () => {
         try {
             setLoading(true);
@@ -156,10 +176,15 @@ const GoldRecordPage: React.FC = () => {
     useEffect(() => {
         fetchCurrentPrice();
         fetchRecords();
+        fetchTodayPrices();
 
         // 每分钟更新一次金价
         const priceInterval = setInterval(fetchCurrentPrice, 10000);
-        return () => clearInterval(priceInterval);
+        const price2Interval = setInterval(fetchTodayPrices, 10000);
+        return () => {
+            clearInterval(priceInterval)
+            clearInterval(price2Interval)
+        };
     }, []);
 
     const handleCreate = async (record: GoldRecord, photo?: File) => {
@@ -274,7 +299,7 @@ const GoldRecordPage: React.FC = () => {
                     renderItem={(record: GoldRecord) => {
                         const profit = calculateProfit(record);
                         const pricePerGram = Number(record.totalPrice) / Number(record.weight);
-                        
+
                         return (
                             <List.Item
                                 style={{ cursor: 'pointer' }}
@@ -357,4 +382,4 @@ const GoldRecordPage: React.FC = () => {
     );
 };
 
-export default GoldRecordPage; 
+export default GoldRecordPage;

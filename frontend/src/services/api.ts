@@ -50,5 +50,12 @@ export const goldRecordApi = {
             params: { startDate, endDate }
         });
         return response.data;
-    }
-}; 
+    },
+
+    async getTodayPrices(isSummary?: boolean) {
+        const response = await axios.get(`${API_BASE_URL}/gold/today-prices`, {
+            params: { isSummary }
+        });
+        return response.data;
+    },
+};

@@ -41,3 +41,4 @@ build/
 /android/app/release/
 
 local.properties
+docker.log

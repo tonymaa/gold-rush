@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.time.format.DateTimeFormatter;
+
 @RestController
 @RequestMapping(path = "/api/gold")
 public class GoldController {
@@ -30,4 +34,13 @@ public class GoldController {
         GoldPrice goldPrice = goldPriceJpaRepository.findTopByOrderByUpdateDate();
         return ResponseInfo.success(goldPrice);
     }
+
+    @GetMapping("/today-prices")
+    public ResponseInfo getTodayPrices() {
+        String today = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        List<GoldPrice> todayPrices = goldPriceJpaRepository.findByUpdateDateBetweenOrderByUpdateDateDesc(today);
+        return ResponseInfo.success(todayPrices);
+    }
+    
+    
 }
