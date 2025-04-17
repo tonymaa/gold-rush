@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import {Layout, Card, Button, Modal, message, Typography, Space, List, Statistic, StatisticProps} from 'antd';
-import { PlusOutlined, FilterOutlined, SortDescendingOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import {
+    Layout,
+    Card,
+    Button,
+    Modal,
+    message,
+    Typography,
+    Space,
+    List,
+    Statistic,
+    StatisticProps,
+    Tooltip,
+    Menu, Dropdown
+} from 'antd';
+import { PlusOutlined, FilterOutlined, SortDescendingOutlined,MenuOutlined, DeleteOutlined, EditOutlined, ImportOutlined, ExportOutlined } from '@ant-design/icons';
 import GoldRecordForm from '../components/GoldRecordForm';
 import { goldRecordApi } from '../services/api';
 import type { GoldRecord } from '../types/GoldRecord';
@@ -225,6 +238,72 @@ const GoldRecordPage: React.FC = () => {
         return currentValue - Number(record.totalPrice);
     };
 
+    const handleExport = () => {
+        try {
+            const csvContent = records.map(record => {
+                console.log('record =>', record);
+                return [
+                    record.purchaseChannel || '未知',
+                    record.weight,
+                    record.totalPrice,
+                    moment(record.purchaseDate).format('YYYY-MM-DD HH:mm:ss')
+                ].join(',');
+            });
+
+            const header = ['购买渠道', '重量(克)', '总价(元)', '购买时间'].join(',');
+            const csv = [header, ...csvContent].join('\n');
+
+            const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `黄金记录_${moment().format('YYYY-MM-DD')}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            message.success('导出成功');
+        } catch (error) {
+            message.error('导出失败');
+            console.error(error);
+        }
+    };
+
+    const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        console.log('333 =>', );
+        if (!file) return;
+
+        console.log('666 =>', );
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const text = e.target?.result as string;
+                const lines = text.split('\n');
+                lines.shift(); // 移除表头
+
+                for (const line of lines) {
+                    if (!line.trim()) continue;
+                    const [purchaseChannel, weight, totalPrice, purchaseDate] = line.split(',');
+
+                    const record: GoldRecord = {
+                        purchaseChannel: purchaseChannel.trim(),
+                        weight: Number(weight),
+                        totalPrice: Number(totalPrice),
+                        purchaseDate: moment(purchaseDate.trim()).toString(),
+                        isSummary: true
+                    };
+
+                    await goldRecordApi.createRecord(record);
+                }
+
+                message.success('导入成功');
+                fetchRecords();
+            } catch (error) {
+                message.error('导入失败');
+                console.error(error);
+            }
+        };
+        reader.readAsText(file);
+    };
+
     return (
         <Layout style={{ minHeight: '100vh', background: '#1a1a1a', padding: '16px' }}>
             <Content>
@@ -247,14 +326,23 @@ const GoldRecordPage: React.FC = () => {
                             formatter={formatter}
                         />
                         <div>
-                            <ProfitStatistic
-                                title="预估收益（元）"
-                                value={estimatedProfit}
-                                precision={2}
-                                $isPositive={estimatedProfit >= 0}
-                                formatter={formatter}
-                                suffix={`/ ${isNaN((estimatedProfit / totalCost) * 100) ? 0 : ((estimatedProfit / totalCost) * 100)?.toFixed(2)}%`}
-                            />
+                            <Tooltip
+                                rootClassName={'tooltip-gold-record-profit'}
+                                color={estimatedProfit >= 0 ? '#ff4d4f' : '#52c41a'}
+                                title={`${isNaN((estimatedProfit / totalCost) * 100) ? 0 : ((estimatedProfit / totalCost) * 100)?.toFixed(2)}%`}
+                            >
+                                <span>
+                                    <ProfitStatistic
+                                        rootClassName={'profit-statistic'}
+                                        title="预估收益（元）"
+                                        value={estimatedProfit}
+                                        precision={2}
+                                        $isPositive={estimatedProfit >= 0}
+                                        formatter={formatter}
+                                        suffix={`/ ${isNaN((estimatedProfit / totalCost) * 100) ? 0 : ((estimatedProfit / totalCost) * 100)?.toFixed(2)}%`}
+                                    />
+                                </span>
+                            </Tooltip>
                             {/*<ProfitStatistic
                                 value={((estimatedProfit / totalCost) * 100)?.toFixed(2)}
                                 precision={2}
@@ -279,6 +367,40 @@ const GoldRecordPage: React.FC = () => {
                     <Space>
                         <ActionButton icon={<FilterOutlined />}>筛选</ActionButton>
                         <ActionButton icon={<SortDescendingOutlined />}>排序</ActionButton>
+                        <Dropdown menu={{
+                            items: [
+                                {
+                                    key: '1',
+                                    label: (
+                                        <>
+                                            <ActionButton icon={<ImportOutlined />} onClick={() => document.getElementById('fileInput')?.click()}>
+                                                导入
+                                            </ActionButton>
+                                            <input
+                                                id="fileInput"
+                                                type="file"
+                                                accept=".csv"
+                                                style={{ display: 'none' }}
+                                                onChange={handleImport}
+                                            />
+                                        </>
+                                    )
+                                },
+                                {
+                                    key: '2',
+                                    label: (
+                                        <ActionButton icon={<ExportOutlined />} onClick={handleExport}>
+                                            导出
+                                        </ActionButton>
+                                    )
+                                }
+                            ]
+                        }}
+                        >
+                            <ActionButton>
+                                <MenuOutlined/>
+                            </ActionButton>
+                        </Dropdown>
                     </Space>
                     <Button
                         type="primary"

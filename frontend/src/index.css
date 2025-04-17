@@ -37,3 +37,19 @@ code {
   color: white !important;
   background-color: #1a1a1a;
 }*/
+
+.profit-statistic .ant-statistic-content-suffix{
+  display: none;
+}
+.tooltip-gold-record-profit:not(.ant-tooltip-hidden){
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .profit-statistic .ant-statistic-content-suffix{
+    display: none !important;
+  }
+  .tooltip-gold-record-profit:not(.ant-tooltip-hidden){
+    display: block !important;
+  }
+}
