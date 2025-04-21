@@ -42,3 +42,4 @@ build/
 
 local.properties
 docker.log
+/sqlite/gold.sqlite

@@ -352,14 +352,25 @@ const GoldRecordPage: React.FC = () => {
                             />*/}
                         </div>
                     </Space>
-                    <div style={{ marginTop: 16 }}>
-                        <GoldPriceStatistic
-                            title="当前金价"
-                            value={currentGoldPrice}
-                            precision={2}
-                            suffix="元/克"
-                            formatter={formatter}
-                        />
+                    <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', }}>
+                        <div style={{ marginTop: 16 }}>
+                            <GoldPriceStatistic
+                                title="当前金价"
+                                value={currentGoldPrice}
+                                precision={2}
+                                suffix="元/克"
+                                formatter={formatter}
+                            />
+                        </div>
+                        <div style={{ marginTop: 16 }}>
+                            <GoldPriceStatistic
+                              title="当前成本价"
+                              value={totalCost / totalWeight}
+                              precision={2}
+                              suffix="元/克"
+                              formatter={formatter}
+                            />
+                        </div>
                     </div>
                 </SummaryCard>
 
