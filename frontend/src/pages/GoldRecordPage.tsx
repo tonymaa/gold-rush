@@ -137,7 +137,9 @@ const GoldRecordPage: React.FC = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [editingRecord, setEditingRecord] = useState<GoldRecord | undefined>();
     const [currentGoldPrice, setCurrentGoldPrice] = useState<number>(0);
+    const [currentGoldPriceBid, setCurrentGoldPriceBid] = useState<number>(0);
     const [todayPrices, setTodayPrices] = useState<Array<any>>([]);
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc'); // 添加排序状态
 
     // 计算总计数据
     const totalWeight = records.reduce((sum, record) => sum + Number(record.weight), 0);
@@ -149,6 +151,7 @@ const GoldRecordPage: React.FC = () => {
         try {
             const price = await goldRecordApi.getCurrentGoldPrice();
             setCurrentGoldPrice(price.data.sell);
+            setCurrentGoldPriceBid(price.data.bid);
         } catch (error) {
             message.error('获取金价失败');
             console.error(error);
@@ -177,7 +180,11 @@ const GoldRecordPage: React.FC = () => {
         try {
             setLoading(true);
             const data = await goldRecordApi.getAllRecords();
-            setRecords(data);
+            // 默认先按时间排序
+            const sortedData = [...data].sort((a, b) => {
+                return moment(b.purchaseDate).valueOf() - moment(a.purchaseDate).valueOf();
+            });
+            setRecords(sortedData);
         } catch (error) {
             message.error('获取记录失败');
             console.error(error);
@@ -189,14 +196,14 @@ const GoldRecordPage: React.FC = () => {
     useEffect(() => {
         fetchCurrentPrice();
         fetchRecords();
-        fetchTodayPrices();
+        // fetchTodayPrices();
 
         // 每分钟更新一次金价
         const priceInterval = setInterval(fetchCurrentPrice, 10000);
-        const price2Interval = setInterval(fetchTodayPrices, 10000);
+        // const price2Interval = setInterval(fetchTodayPrices, 10000);
         return () => {
             clearInterval(priceInterval)
-            clearInterval(price2Interval)
+            // clearInterval(price2Interval)
         };
     }, []);
 
@@ -304,6 +311,19 @@ const GoldRecordPage: React.FC = () => {
         reader.readAsText(file);
     };
 
+
+    const handleSort = () => {
+        const newOrder = sortOrder === 'desc' ? 'asc' : 'desc';
+        setSortOrder(newOrder);
+        const sortedRecords = [...records].sort((a, b) => {
+            const timeA = moment(a.purchaseDate).valueOf();
+            const timeB = moment(b.purchaseDate).valueOf();
+            return newOrder === 'asc' ? timeA - timeB : timeB - timeA;
+        });
+        setRecords(sortedRecords);
+    };
+
+
     return (
         <Layout style={{ minHeight: '100vh', background: '#1a1a1a', padding: '16px' }}>
             <Content>
@@ -355,11 +375,20 @@ const GoldRecordPage: React.FC = () => {
                     <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', }}>
                         <div style={{ marginTop: 16 }}>
                             <GoldPriceStatistic
-                                title="当前金价"
-                                value={currentGoldPrice}
-                                precision={2}
-                                suffix="元/克"
-                                formatter={formatter}
+                              title="当前买入价"
+                              value={currentGoldPriceBid}
+                              precision={2}
+                              suffix="元/克"
+                              formatter={formatter}
+                            />
+                        </div>
+                        <div style={{ marginTop: 16 }}>
+                            <GoldPriceStatistic
+                              title="当前金价"
+                              value={currentGoldPrice}
+                              precision={2}
+                              suffix="元/克"
+                              formatter={formatter}
                             />
                         </div>
                         <div style={{ marginTop: 16 }}>
@@ -376,8 +405,13 @@ const GoldRecordPage: React.FC = () => {
 
                 <Space style={{ marginBottom: 16, width: '100%', justifyContent: 'space-between' }}>
                     <Space>
-                        <ActionButton icon={<FilterOutlined />}>筛选</ActionButton>
-                        <ActionButton icon={<SortDescendingOutlined />}>排序</ActionButton>
+                        <ActionButton icon={<FilterOutlined/>}>筛选</ActionButton>
+                        <ActionButton
+                            icon={<SortDescendingOutlined/>}
+                            onClick={handleSort}
+                        >
+                            {sortOrder === 'desc' ? '时间降序' : '时间升序'}
+                        </ActionButton>
                         <Dropdown menu={{
                             items: [
                                 {
