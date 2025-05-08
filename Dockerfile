@@ -17,9 +17,12 @@ RUN mvn clean package -DskipTests
 # Final stage
 FROM nginx:alpine
 WORKDIR /app
-
+# 换源 + 更新
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+ && apk update
 # Install OpenJDK
-RUN apk add --no-cache openjdk17-jre
+RUN apk add --no-cache openjdk17-jre-headless
+RUN rm -rf /usr/lib/jvm/java-17-openjdk/lib/locale
 
 # Copy backend jar
 COPY --from=backend-build /app/backend/target/*.jar /app/app.jar
