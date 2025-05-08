@@ -20,7 +20,6 @@ import type { GoldRecord } from '../types/GoldRecord';
 import styled from 'styled-components';
 import CountUp from 'react-countup';
 import moment from "moment/moment";
-import { Line } from '@ant-design/charts';
 
 const formatter: StatisticProps['formatter'] = (value) => (
     <CountUp end={value as number} separator="," decimals={2} duration={0.3}/>
