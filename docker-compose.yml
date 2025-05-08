@@ -9,7 +9,7 @@ services:
     ports:
       - "1300:80"
     volumes:
-      - ${SQLITE_DATA:gold-sqlite-data}:/app/sqlite
+      - ${SQLITE_DATA:-gold-sqlite-data}:/app/sqlite
 
 volumes:
   gold-sqlite-data:
