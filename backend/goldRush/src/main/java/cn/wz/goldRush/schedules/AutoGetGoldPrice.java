@@ -47,7 +47,7 @@ public class AutoGetGoldPrice {
     @Autowired
     EmailService emailService;
 
-    @Scheduled(cron = "*/10 * * * * ?")
+//    @Scheduled(cron = "*/10 * * * * ?")
     public void start(){
         GoldPrice goldPrice = goldService.getCnBankGoldPrice();
         goldPriceJpaRepository.save(goldPrice);

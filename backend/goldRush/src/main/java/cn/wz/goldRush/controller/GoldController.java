@@ -31,7 +31,7 @@ public class GoldController {
     GoldPriceJpaRepository goldPriceJpaRepository;
     @GetMapping("/price")
     public ResponseInfo price(){
-        GoldPrice goldPrice = goldPriceJpaRepository.findTopByOrderByUpdateDate();
+        GoldPrice goldPrice = goldService.getCnBankGoldPrice();
         return ResponseInfo.success(goldPrice);
     }
 
