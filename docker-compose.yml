@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  gold-rush-server:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: gold-rush
+    ports:
+      - "1300:80"
+    volumes:
+      - gold-sqlite-data:/app/sqlite
+
+volumes:
+  gold-sqlite-data:

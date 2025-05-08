@@ -1,5 +1,5 @@
 # gold-rush
-gold rush rush
+gold rush rush / 
 
 ```shell
 # 构建镜像
